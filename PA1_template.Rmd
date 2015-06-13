@@ -90,18 +90,9 @@ weekdayVar[indicesWeekdays] <- "weekday"
 weekdayVar <- as.factor(weekdayVar)
 
 modifActivityData2 <- cbind(modifActivityData, weekdayVar)
-stepsWeekday <- modifActivityData2[weekdayVar == "weekday",]
-stepsWeekend <- modifActivityData2[weekdayVar == "weekend",]
-aggregatedData4 <- aggregate(steps~interval, data=stepsWeekday, FUN="mean")
-aggregatedData5 <- aggregate(steps~interval, data=stepsWeekend, FUN="mean")
+aggregatedData6 <- aggregate(steps~interval+weekdayVar, data=modifActivityData2, FUN="mean")
 
-# Histogram of the total number of steps taken per day
-par(mfcol = c(1,2))
-
-# Repeat previous histogram for comparison
-with(aggregatedData4, plot(interval, steps, type = "l", main = "Steps taken on weekdays", ylab = "Mean number of steps", xlab ="Interval of the day"))
-
-# Make a histogram of the steps taken per day (NAs filled in)
-with(aggregatedData5, plot(interval, steps, type = "l", main = "Steps taken on weekends", ylab = "Mean number of steps", xlab ="Interval of the day"))
-
+# Make a panel plot to compare patterns between weekdays and weekends
+library(lattice)
+xyplot(aggregatedData6$steps ~ aggregatedData6$interval | aggregatedData6$weekdayVar, type = "l", layout = c(1,2),ylab = "Mean number of steps", xlab ="Interval of the day")
 ```
