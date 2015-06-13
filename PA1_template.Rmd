@@ -9,7 +9,11 @@ output:
 ## Loading and preprocessing the data
 
 ```{r}
+
+# unzip the input data file
 unzip("activity.zip", overwrite = TRUE, exdir = ".")
+
+# load the input data file
 activityData <- read.csv("activity.csv")
 ##activityData$date <- strptime(as.character(activityData$date), "%Y-%m-%d")
 ```
@@ -21,20 +25,27 @@ activityData <- read.csv("activity.csv")
 # Calculate the total number of steps taken per day (ignoring NAs)
 aggregatedData <- aggregate(steps~date, data=activityData, FUN="sum", na.action = na.omit)
 
-# Hisorgram of the total number of steps taken per day
-#png("plot1.png", width = 480, height = 480)
+# Histogram of the total number of steps taken per day
 with(aggregatedData, hist(steps, main = "Number of steps per day", xlab = "Steps per day", col="red"))
-#dev.off()
 
 # Report the mean and median of the total number of steps taken per day
 mean(aggregatedData$steps)
 median(aggregatedData$steps)
 ```
 
-
 ## What is the average daily activity pattern?
 
+```{r}
+# calculate the mean of steps taken per 5 min inerval acros all days
+aggregatedData2 <- aggregate(steps~interval, data=activityData, FUN="mean", na.action = na.omit)
 
+# Plot the time series pattern of the mean steps taken per 5 min interval
+with(aggregatedData2, plot(interval, steps, type = "l", ylab = "Mean number of steps", xlab ="Intervalof the day"))
+
+# Report which interval contains the maximum number of steps
+maxStepsInterval <- which(aggregatedData2$steps == max(aggregatedData2$steps))
+aggregatedData2[maxStepsInterval,]
+```
 
 ## Imputing missing values
 
