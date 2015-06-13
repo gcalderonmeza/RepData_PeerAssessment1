@@ -49,6 +49,27 @@ aggregatedData2[maxStepsInterval,]
 
 ## Imputing missing values
 
+```{r}
+# Compute the number of rows with missing values
+# First indices of rows with missing values
+missingStepsValues <- which(is.na(activityData$steps))
+# Second Compute the number of rows with missing values
+length(missingStepsValues)
 
+# Create a new dataset with the NAs filled in
+modifActivityData <- activityData
+for(i in missingStepsValues) {
+  modifActivityData[i,"steps"] <- aggregatedData2[aggregatedData2$interval == modifActivityData[i, "interval"], "steps"]
+}
+
+# Calculate the total number of steps taken per day (ignoring NAs)
+aggregatedData3 <- aggregate(steps~date, data=modifActivityData, FUN="sum")
+
+# Histogram of the total number of steps taken per day
+with(aggregatedData3, hist(steps, main = "Number of steps per day (NAs filled in)", xlab = "Steps per day", col="red"))
+
+
+
+```
 
 ## Are there differences in activity patterns between weekdays and weekends?
